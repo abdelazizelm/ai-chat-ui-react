@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>AI Chat Interface</title>
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Prism.js Theme -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+    <!-- Prism.js Core -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <!-- Prism.js Languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+
+    <style>
+      /* Improve text rendering */
+      * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 4px;
+      }
+
+      .dark ::-webkit-scrollbar-thumb {
+        background: #4a5568;
+      }
+
+      /* Message text styles */
+      .message {
+        font-size: 1rem;
+        line-height: 1.5;
+        letter-spacing: -0.011em;
+      }
+
+      @media (max-width: 640px) {
+        .message {
+          font-size: 0.9375rem;
+          line-height: 1.45;
+        }
+      }
+
+      /* Code block styles */
+      pre[class*="language-"] {
+        margin: 0;
+        padding: 1rem;
+        background: #1a1a1a;
+        border-radius: 0 0 0.5rem 0.5rem;
+        overflow-x: auto;
+      }
+
+      .dark pre[class*="language-"] {
+        background: #000;
+      }
+
+      code[class*="language-"] {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 0.9em;
+        line-height: 1.5;
+        tab-size: 2;
+      }
+
+      /* Code block header */
+      .code-block-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 0.5rem 0.5rem 0 0;
+        font-size: 0.875rem;
+        color: #a0aec0;
+      }
+
+      .dark .code-block-header {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Inline code */
+      :not(pre) > code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 0.9em;
+        color: #e06c75;
+        background: rgba(0, 0, 0, 0.1);
+        padding: 0.2em 0.4em;
+        border-radius: 0.25em;
+        white-space: nowrap;
+      }
+
+      .dark :not(pre) > code {
+        color: #e06c75;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Copy button */
+      .copy-button {
+        background: transparent;
+        border: none;
+        padding: 0.25rem 0.5rem;
+        color: #a0aec0;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+
+      .copy-button:hover {
+        color: #fff;
+      }
+
+      /* Loading indicator */
+      .typing-indicator {
+        display: inline-flex;
+        align-items: center;
+        color: #6b7280;
+      }
+
+      .typing-indicator .dots::after {
+        display: inline-block;
+        animation: typing 1.5s infinite;
+        content: '';
+      }
+
+      @keyframes typing {
+        0% { content: ''; }
+        25% { content: '.'; }
+        50% { content: '..'; }
+        75% { content: '...'; }
+      }
+
+      /* Syntax highlighting colors */
+      .token.comment,
+      .token.prolog,
+      .token.doctype,
+      .token.cdata {
+        color: #7f848e !important;
+        font-style: italic !important;
+      }
+      .token.function {
+        color: #61afef !important;
+      }
+      .token.keyword {
+        color: #c678dd !important;
+      }
+      .token.string {
+        color: #98c379 !important;
+      }
+      .token.number {
+        color: #d19a66 !important;
+      }
+      .token.boolean {
+        color: #56b6c2 !important;
+      }
+      .token.operator {
+        color: #56b6c2 !important;
+      }
+      .token.class-name {
+        color: #e5c07b !important;
+      }
+      .token.variable {
+        color: #e06c75 !important;
+      }
+      .token.punctuation {
+        color: #abb2bf !important;
+      }
+    </style>
+
+    <script>
+      // Initialize Prism.js
+      Prism.manual = true;
+      
+      // Initialize Tailwind config
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            animation: {
+              'fade-in': 'fadeIn 0.5s ease-in-out',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 h-full">
+    <div class="container mx-auto flex flex-col h-full p-4">
+      <!-- Header -->
+      <header class="flex justify-between items-center mb-4 sticky top-0 z-10 bg-gray-100 dark:bg-gray-900 py-2">
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Ollama Chat</h1>
+        <div class="flex items-center space-x-2">
+          <div id="headerLoadingIndicator" class="hidden">
+            <div class="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent"></div>
+          </div>
+          <button
+            id="newChatButton"
+            class="px-3 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white flex items-center space-x-2 transition-colors"
+            title="Start a new conversation"
+          >
+            <i class="fas fa-plus"></i>
+            <span class="hidden sm:inline">New Chat</span>
+          </button>
+          <button
+            id="historyButton"
+            class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+            title="Toggle conversation history"
+          >
+            <i class="fas fa-history"></i>
+          </button>
+          <button
+            id="themeButton"
+            class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+            title="Toggle dark mode"
+          >
+            <i class="fas fa-moon dark:hidden"></i>
+            <i class="fas fa-sun hidden dark:inline"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Chat Container -->
+      <div
+        id="chatContainer"
+        class="flex-grow overflow-y-auto mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm space-y-4"
+      ></div>
+
+      <!-- Input Area -->
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+        <div class="flex items-center space-x-2">
+          <div class="relative flex-grow">
+            <input
+              type="text"
+              id="messageInput"
+              class="w-full p-3 pr-12 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white"
+              placeholder="Type your message..."
+            />
+            <div id="messageLoadingIndicator" class="hidden absolute right-3 top-1/2 transform -translate-y-1/2">
+              <div class="typing-indicator text-primary dark:text-gray-300"></div>
+            </div>
+          </div>
+          <button
+            id="sendButton"
+            class="bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors flex items-center space-x-2"
+          >
+            <span>Send</span>
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Panel -->
+    <div id="historyPanel" class="fixed right-0 top-0 h-full w-80 bg-white dark:bg-gray-800 shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+      <div class="p-4 border-b dark:border-gray-700 flex justify-between items-center bg-white dark:bg-gray-800 sticky top-0">
+        <h2 class="text-lg font-semibold dark:text-white">Chat History</h2>
+        <button id="closeHistoryBtn" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-2">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="historyList" class="overflow-y-auto h-full p-4">
+        <!-- Conversation items will be added here -->
+      </div>
+      <div class="p-4">
+        <div class="flex gap-2 mb-4">
+          <button id="exportBtn" class="flex-1 bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 text-sm transition-colors">
+            <i class="fas fa-download mr-1"></i> Export
+          </button>
+          <button id="importBtn" class="flex-1 bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600 text-sm transition-colors">
+            <i class="fas fa-upload mr-1"></i> Import
+          </button>
+        </div>
+        <input type="file" id="historyFileInput" accept=".json" class="hidden">
+        
+        <div id="conversationsList" class="space-y-3 mt-4 overflow-y-auto max-h-[calc(100vh-200px)]">
+          <!-- Conversations will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Template -->
+    <template id="notificationTemplate">
+      <div class="notification fixed bottom-4 right-4 p-4 rounded-lg shadow-lg z-50 text-white"></div>
+    </template>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
