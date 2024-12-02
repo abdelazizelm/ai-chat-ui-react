@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import db from './database.js';
+import 'dotenv/config';
 
 const app = express();
 app.use(cors());
@@ -118,7 +119,7 @@ app.delete('/api/conversations/:id', (req, res) => {
   res.json({ success: true });
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

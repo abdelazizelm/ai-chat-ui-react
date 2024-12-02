@@ -1,11 +1,13 @@
 import Database from 'better-sqlite3';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import 'dotenv/config';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const db = new Database(join(__dirname, 'chat.db'));
+const dbPath = process.env.DB_PATH || join(__dirname, 'chat.db');
+const db = new Database(dbPath);
 
 // Initialize database with tables
 db.exec(`

@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = import.meta.env.VITE_BACKEND_API_BASE_URL || 'http://localhost:3001/api';
 
 export const api = {
   async getConversations() {

@@ -7,8 +7,11 @@ import {
   SelectValue,
 } from "./ui/select"
 
+const OLLAMA_API_BASE = import.meta.env.VITE_OLLAMA_API_BASE_URL || 'http://localhost:11434/api';
+const TAGS_ENDPOINT = import.meta.env.VITE_OLLAMA_API_TAGS_ENDPOINT || '/tags';
+
 async function fetchModels() {
-  const response = await fetch('http://localhost:11434/api/tags')
+  const response = await fetch(`${OLLAMA_API_BASE}${TAGS_ENDPOINT}`)
   if (!response.ok) {
     throw new Error('Failed to fetch models')
   }

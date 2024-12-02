@@ -1,7 +1,10 @@
-export const API_ENDPOINT = "http://localhost:11434/api/generate";
-export const DEFAULT_MODEL = "llama3.2:latest";
-export const MAX_CONVERSATION_LENGTH = 100;
-export const TYPING_DELAY = 50;
+const OLLAMA_API_BASE = import.meta.env.VITE_OLLAMA_API_BASE_URL || 'http://localhost:11434/api';
+const GENERATE_ENDPOINT = import.meta.env.VITE_OLLAMA_API_GENERATE_ENDPOINT || '/generate';
+
+export const API_ENDPOINT = `${OLLAMA_API_BASE}${GENERATE_ENDPOINT}`;
+export const DEFAULT_MODEL = import.meta.env.VITE_DEFAULT_MODEL || "llama2:latest";
+export const MAX_CONVERSATION_LENGTH = parseInt(import.meta.env.VITE_MAX_CONVERSATION_LENGTH || "100");
+export const TYPING_DELAY = parseInt(import.meta.env.VITE_TYPING_DELAY || "50");
 
 export const SYSTEM_PROMPT = `You are a helpful and knowledgeable AI assistant. Follow these guidelines:
 
