@@ -27,9 +27,9 @@ export default function ModelSelector({ value, onChange }) {
 
   if (isLoading) {
     return (
-      <Select disabled>
+      <Select disabled value={value}>
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Loading models..." />
+          <SelectValue>{value}</SelectValue>
         </SelectTrigger>
       </Select>
     )
@@ -37,9 +37,9 @@ export default function ModelSelector({ value, onChange }) {
 
   if (error) {
     return (
-      <Select disabled>
+      <Select disabled value={value}>
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Error loading models" />
+          <SelectValue>{value}</SelectValue>
         </SelectTrigger>
       </Select>
     )
@@ -48,7 +48,7 @@ export default function ModelSelector({ value, onChange }) {
   return (
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a model" />
+        <SelectValue>{value}</SelectValue>
       </SelectTrigger>
       <SelectContent>
         {models.map((model) => (
